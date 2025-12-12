@@ -118,6 +118,7 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy #allows nodes to join cluster
         - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy #networking
         - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly #allows pulling the images from ECR
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
       Tags:
         - Key: Name
           Value: eks-NodeGroup-role

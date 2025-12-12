@@ -16,10 +16,12 @@ Resources:
               Service: codepipeline.amazonaws.com
             Action: sts:AssumeRole
       ManagedPolicyArns:
-          - arn:aws:iam::aws:policy/AWSCodePipelineFullAccess
+          - arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess
+          - arn:aws:iam::aws:policy/AmazonS3FullAccess
+          - arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess
       Tags:
         - Key: Name
-          Value: codepipelie-service-role
+          Value: codepipeline-service-role
 
 
 
@@ -46,21 +48,21 @@ Resources:
   CodePipelineDeployRole: 
     Type: AWS::IAM::Role
     Properties:
-    AssumeRolePolicyDocument:
-      Version: "2012-10-17"
-      Statement:
-        - Effect: Allow
-          Principal:
-            Service: codebuild.amazonaws.com
-          Action: sts:AssumeRole
-    ManagedPolicyArns:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
         - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
         - arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
-    Tags:
-      - Key: Name
-        Value: codedeploy-service-role
+      Tags:
+        - Key: Name
+          Value: codedeploy-service-role
 
 
   ArtifactStoreBucket:
@@ -123,13 +125,13 @@ Resources:
                 Owner: ThirdParty
                 Provider: GitHub # this automatically triggers on push
                 Version: "1"
-          OutputArtifacts:
-            - Name: SourceOutput
-          Configuration:
-            Owner: emad-v 
-            Repo: insights-maintenance-manager-internship
-            Branch: main
-            OAuthToken: "{{resolve:secretsmanager:github-token-maintenance-manager:SecretString:token}}" # it might not work in a sandbox 
+              Configuration:
+                Owner: emad-v 
+                Repo: Maintenance-Manager
+                Branch: main
+                OAuthToken: "{{resolve:secretsmanager:github-token-maintenance-manager:SecretString:token}}" # it might not work in a sandbox 
+              OutputArtifacts:
+                - Name: SourceOutput
         - Name: Build  #build stage 
           Actions:
             - Name: BuildAction
