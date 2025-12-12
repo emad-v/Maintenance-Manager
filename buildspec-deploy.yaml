@@ -1,0 +1,26 @@
+version: 0.2
+
+phases: 
+  pre_build:
+    commands:
+      - echo "Installing kubectl..."
+      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      - chmod +x kubectl
+      - mv kubectl /usr/local/bin/
+      - kubectl version --client
+
+  build: 
+    commands: 
+      - echo "Configuring kubectl to connect to EKS"
+      - aws eks update-kubeconfig --region eu-west-1 --name maintenance-manager-cluster
+
+
+  post_build: 
+    commands: 
+      - echo "Applying Kubernetes manifests..."
+      - kubectl apply -f kubernetes/postgres-deployment.yaml
+      - kubectl apply -f kubernetes/postgres-service.yaml
+      - kubectl apply -f kubernetes/app-deployment.yaml
+      - kubectl apply -f kubernetes/app-service.yaml
+      - echo "Restarting application deployment to pull latest image..."
+      - kubectl rollout restart deployment/maintenance-manager-app

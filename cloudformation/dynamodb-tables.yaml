@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: 'DynamoDb tables for Maintenance Manager - MaintenanceLog and Notification ' 
+  
+Resources: 
+ MaintenanceLogTable:
+  Type: AWS::DynamoDB::Table
+  DeletionPolicy: Retain
+  Properties: 
+   TableName: MaintenanceLogTable
+   BillingMode: PAY_PER_REQUEST
+   AttributeDefinitions:
+     - AttributeName: PK
+       AttributeType: S
+     - AttributeName: SK
+       AttributeType: S
+   KeySchema:
+     - AttributeName: PK
+       KeyType: HASH  
+     - AttributeName: SK
+       KeyType: RANGE
+
+ NotificationTable:
+  Type: AWS::DynamoDB::Table
+  DeletionPolicy: Retain
+  Properties:
+   TableName: NotificationTable
+   BillingMode: PAY_PER_REQUEST
+   AttributeDefinitions:
+     - AttributeName: PK
+       AttributeType: S
+     - AttributeName: SK
+       AttributeType: S
+   KeySchema:
+     - AttributeName: PK
+       KeyType: HASH  
+     - AttributeName: SK
+       KeyType: RANGE
+            

@@ -1,0 +1,160 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: 'CodePipline to automate the deployemnet process for the maintenance-manager ' 
+
+Resources: 
+
+# Roles 
+
+  CodePipelineServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/AWSCodePipelineFullAccess
+      Tags:
+        - Key: Name
+          Value: codepipelie-service-role
+
+
+
+
+
+  CodeBuildServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser
+          - arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess
+          - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      Tags:
+        - Key: Name
+          Value: codebuild-service-role
+
+  CodePipelineDeployRole: 
+    Type: AWS::IAM::Role
+    Properties:
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service: codebuild.amazonaws.com
+          Action: sts:AssumeRole
+    ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+    Tags:
+      - Key: Name
+        Value: codedeploy-service-role
+
+
+  ArtifactStoreBucket:
+    Type: AWS::S3::Bucket 
+    Properties:
+      BucketName: maintenance-manager-pipeline-artifacts 
+      VersioningConfiguration:
+        Status: Enabled
+      Tags:
+        - Key: Name
+          Value: pipeline-artifacts
+
+  
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: maintenance-manager-build
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+      Artifacts: 
+        Type: CODEPIPELINE
+      Environment: 
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:7.0   # Pre-built image with Docker/Git/AWS CLI installed
+        PrivilegedMode: true # Allows Docker commands (docker build, docker push)
+      Source: 
+        Type: CODEPIPELINE
+
+
+
+  CodeBuildDeployProject:
+    Type: AWS::CodeBuild::Project
+    Properties: 
+      Name: maintenance-manager-deploy-build
+      ServiceRole: !GetAtt CodePipelineDeployRole.Arn
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment: 
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:7.0
+      Source: 
+        Type: CODEPIPELINE
+        BuildSpec: buildspec-deploy.yaml
+
+  MaintenancPipline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: maintenance-manager-pipeline
+      RoleArn: !GetAtt CodePipelineServiceRole.Arn
+      ArtifactStore:
+        Type: S3
+        Location: !Ref ArtifactStoreBucket
+      Stages:
+        - Name: Source #source statge
+          Actions:
+            - Name: SourceAction 
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Provider: GitHub # this automatically triggers on push
+                Version: "1"
+          OutputArtifacts:
+            - Name: SourceOutput
+          Configuration:
+            Owner: emad-v 
+            Repo: insights-maintenance-manager-internship
+            Branch: main
+            OAuthToken: "{{resolve:secretsmanager:github-token-maintenance-manager:SecretString:token}}" # it might not work in a sandbox 
+        - Name: Build  #build stage 
+          Actions:
+            - Name: BuildAction
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              InputArtifacts:
+                - Name: SourceOutput
+              OutputArtifacts:
+                - Name: BuildOutput
+              Configuration:
+                ProjectName: !Ref CodeBuildProject 
+     
+        - Name: deploy 
+          Actions: 
+            - Name: DeployAction 
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              InputArtifacts:
+                - Name: SourceOutput
+              Configuration:
+                ProjectName: !Ref CodeBuildDeployProject
+

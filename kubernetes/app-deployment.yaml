@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maintenance-manager-app  # Deployment name
+spec:
+  replicas: 1 # Create 1 pod
+  selector:
+    matchLabels:
+      app: maintenance-manager
+  template:
+    metadata:
+      labels:
+        app: maintenance-manager # Every pod I create gets this label 
+    spec:
+      containers:
+      - name: maintenance-manager  # Container name (just for identification) 
+        image: 855974671731.dkr.ecr.eu-west-1.amazonaws.com/maintenance-manager:latest # Pull this image from ECR
+        ports:
+        - containerPort: 8080 # based on docker file   # Container listens on port 8080
+        env: 
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Docker"
+        - name: ConnectionStrings__Default
+          value: "Host=postgres-service;Port=5432;Database=MaintenanceManager;Username=postgres;Password=4444"
+        - name: AWS__AccessKey
+          value: 
+        - name: AWS__SecretKey 
+          value: 
+        - name: AWS__SessionToken
+          value: 

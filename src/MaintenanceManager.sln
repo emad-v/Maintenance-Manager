@@ -1,0 +1,100 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintenanceManager.Web.Service", "MaintenanceManager.Web.Service\MaintenanceManager.Web.Service.csproj", "{FEB1329F-EB9E-4480-B174-9E125741FC3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintenanceManager.DomainModel", "MaintenanceManager.DomainModel\MaintenanceManager.DomainModel.csproj", "{E387A211-B41D-40D5-8AF6-01CB24D2D2BF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Service Layer", "1. Service Layer", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Business Layer", "2. Business Layer", "{5756CAFF-FBD7-4347-827F-646CCAB362DE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Data Layer", "3. Data Layer", "{8544B442-4042-44E2-A907-078868FE316A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{E29AB748-DDCD-4898-85A0-C3A9D6BF86A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintenanceManager.Data", "MaintenanceManager.DataModel\MaintenanceManager.Data.csproj", "{AE1D1987-D7C7-4103-8396-8BB72703C57B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintenanceManager.Interfaces", "MaintenanceManager.Interfaces\MaintenanceManager.Interfaces.csproj", "{4ADCAE54-E976-434F-9DB3-BDB0C9124FD8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintenanceManager.Business", "MaintenanceManager.Business\MaintenanceManager.Business.csproj", "{98BC1A69-4917-45CA-A9BD-5875232548AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Layer.Test", "Data.Layer.Test\Data.Layer.Test.csproj", "{5965F597-56D6-4887-8866-C4D735A69A48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintenanceManager.Web.API", "MaintenanceManager.Web.API\MaintenanceManager.Web.API.csproj", "{C48969EE-8794-4E44-9997-15B7CEC1DD03}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		..\buildspec-deploy.yaml = ..\buildspec-deploy.yaml
+		..\buildspec.yaml = ..\buildspec.yaml
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CloudFormation", "CloudFormation", "{1D7B6382-58E1-473A-A8A2-5D0EF6A52ECB}"
+	ProjectSection(SolutionItems) = preProject
+		..\cloudformation\codepipeline.yaml = ..\cloudformation\codepipeline.yaml
+		..\cloudformation\dynamodb-tables.yaml = ..\cloudformation\dynamodb-tables.yaml
+		..\cloudformation\ecr-repository.yaml = ..\cloudformation\ecr-repository.yaml
+		..\cloudformation\eks-cluster.yaml = ..\cloudformation\eks-cluster.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "kubernetes", "kubernetes", "{C47FAAE9-C77C-4DE7-BEE7-92188C2C2295}"
+	ProjectSection(SolutionItems) = preProject
+		..\kubernetes\app-deployment.yaml = ..\kubernetes\app-deployment.yaml
+		..\kubernetes\app-service.yaml = ..\kubernetes\app-service.yaml
+		..\kubernetes\postgres-deployment.yaml = ..\kubernetes\postgres-deployment.yaml
+		..\kubernetes\postgres-service.yaml = ..\kubernetes\postgres-service.yaml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FEB1329F-EB9E-4480-B174-9E125741FC3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEB1329F-EB9E-4480-B174-9E125741FC3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEB1329F-EB9E-4480-B174-9E125741FC3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEB1329F-EB9E-4480-B174-9E125741FC3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E387A211-B41D-40D5-8AF6-01CB24D2D2BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E387A211-B41D-40D5-8AF6-01CB24D2D2BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E387A211-B41D-40D5-8AF6-01CB24D2D2BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E387A211-B41D-40D5-8AF6-01CB24D2D2BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE1D1987-D7C7-4103-8396-8BB72703C57B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE1D1987-D7C7-4103-8396-8BB72703C57B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE1D1987-D7C7-4103-8396-8BB72703C57B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE1D1987-D7C7-4103-8396-8BB72703C57B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4ADCAE54-E976-434F-9DB3-BDB0C9124FD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4ADCAE54-E976-434F-9DB3-BDB0C9124FD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4ADCAE54-E976-434F-9DB3-BDB0C9124FD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4ADCAE54-E976-434F-9DB3-BDB0C9124FD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98BC1A69-4917-45CA-A9BD-5875232548AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98BC1A69-4917-45CA-A9BD-5875232548AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98BC1A69-4917-45CA-A9BD-5875232548AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98BC1A69-4917-45CA-A9BD-5875232548AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5965F597-56D6-4887-8866-C4D735A69A48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5965F597-56D6-4887-8866-C4D735A69A48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5965F597-56D6-4887-8866-C4D735A69A48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5965F597-56D6-4887-8866-C4D735A69A48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C48969EE-8794-4E44-9997-15B7CEC1DD03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C48969EE-8794-4E44-9997-15B7CEC1DD03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C48969EE-8794-4E44-9997-15B7CEC1DD03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C48969EE-8794-4E44-9997-15B7CEC1DD03}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E387A211-B41D-40D5-8AF6-01CB24D2D2BF} = {5756CAFF-FBD7-4347-827F-646CCAB362DE}
+		{AE1D1987-D7C7-4103-8396-8BB72703C57B} = {8544B442-4042-44E2-A907-078868FE316A}
+		{4ADCAE54-E976-434F-9DB3-BDB0C9124FD8} = {5756CAFF-FBD7-4347-827F-646CCAB362DE}
+		{98BC1A69-4917-45CA-A9BD-5875232548AD} = {5756CAFF-FBD7-4347-827F-646CCAB362DE}
+		{5965F597-56D6-4887-8866-C4D735A69A48} = {E29AB748-DDCD-4898-85A0-C3A9D6BF86A2}
+		{C48969EE-8794-4E44-9997-15B7CEC1DD03} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3AA50CF8-81C5-45F0-B511-B3493F152A0A}
+	EndGlobalSection
+EndGlobal

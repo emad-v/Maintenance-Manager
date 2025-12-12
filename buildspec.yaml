@@ -1,0 +1,31 @@
+﻿version: 0.2
+
+env:
+    ACCOUNT_ID: "855974671731"
+    REGION: "eu-west-1"
+    Repo_name: "maintenance-manager"
+
+
+
+
+phases:
+ 
+  pre_build:
+     commands:
+       - echo Logging in to Amazon ECR...
+       - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.eu-west-1.amazonaws.com # log in into ecr
+
+
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t ${Repo_name}:latest -f src/MaintenanceManager.Web.Service/Dockerfile .
+      - docker tag ${Repo_name}" "${ACCOUNT_ID}.dkr.ecr.eu-west-1.amazonaws.com
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push ${ACCOUNT_ID}.dkr.ecr.eu-west-1.amazonaws.com/${Repo_name}:latest
+

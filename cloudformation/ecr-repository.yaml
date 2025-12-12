@@ -1,0 +1,8 @@
+﻿AWSTemplateFormatVersion: 2010-09-09
+Description: 'ECR repository for Maintenance Manager Docker images'
+
+Resources:
+  MaintenanceManagerRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: maintenance-manager
