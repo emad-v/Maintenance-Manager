@@ -41,6 +41,7 @@ Resources:
           - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser
           - arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess
           - arn:aws:iam::aws:policy/AmazonS3FullAccess
+          - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
       Tags:
         - Key: Name
           Value: codebuild-service-role
