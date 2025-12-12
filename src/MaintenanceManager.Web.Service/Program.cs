@@ -21,6 +21,7 @@ namespace MaintenanceManager.Web.Service
         {
             var builder = WebApplication.CreateBuilder(args);//// This line automatically loads appsettings.{Environment}.json
             Console.WriteLine($"Environment: ----------------------------------->>   {builder.Environment.EnvironmentName}");
+            Console.WriteLine("pipline test, let's go");
 
             builder.Services.AddDbContext<MaintenanceManagerDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));//injecting the database
