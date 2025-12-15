@@ -20,7 +20,6 @@ phases:
   post_build: 
     commands: 
       - echo "Applying Kubernetes manifests..."
-      - echo "with validate ==false"
       - kubectl apply -f kubernetes/postgres-deployment.yaml --validate=false
       - kubectl apply -f kubernetes/postgres-service.yaml
       - kubectl apply -f kubernetes/app-deployment.yaml
