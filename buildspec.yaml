@@ -15,7 +15,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - docker build -t $Repo_name:latest -f src/MaintenanceManager.Web.Service/Dockerfile .
+      - docker build -t maintenance-manager:latest -f src/MaintenanceManager.Web.Service/Dockerfile .
       - docker tag maintenance-manager:latest 855974671731.dkr.ecr.eu-west-1.amazonaws.com/maintenance-manager:latest
 
   post_build:
@@ -24,3 +24,4 @@ phases:
       - echo Pushing the Docker image...
       - docker push 855974671731.dkr.ecr.eu-west-1.amazonaws.com/maintenance-manager:latest
 
+      
