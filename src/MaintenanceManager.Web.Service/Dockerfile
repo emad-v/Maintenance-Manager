@@ -1,4 +1,4 @@
-
+﻿
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 USER $APP_UID
@@ -17,17 +17,28 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
 
 ARG BUILD_CONFIGURATION=Release
-WORKDIR /src # cd /src - create if doesnt exist
+# cd /src - create if doesnt exist
+WORKDIR /src 
+
 
 
 # Copy only the service csproj
 COPY ["src/MaintenanceManager.Web.Service/MaintenanceManager.Web.Service.csproj", "MaintenanceManager.Web.Service/"]
 
-RUN dotnet restore "MaintenanceManager.Web.Service/MaintenanceManager.Web.Service.csproj" #Download all external dependencies that the project needs to compile
 
-COPY src/ .
 
-WORKDIR "/src/MaintenanceManager.Web.Service"
+#Download all external dependencies that the project needs to compile
+RUN dotnet restore "MaintenanceManager.Web.Service/MaintenanceManager.Web.Service.csproj" 
+
+
+# copy from computer into the container 
+COPY src/ .  
+
+
+WORKDIR "MaintenanceManager.Web.Service"
+
+
+
 RUN dotnet build "MaintenanceManager.Web.Service.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 
