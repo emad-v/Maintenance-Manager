@@ -12,6 +12,8 @@ phases:
   build: 
     commands: 
       - echo "Configuring kubectl to connect to EKS"
+      - echo "Current IAM identity:"
+      - aws sts get-caller-identity
       - aws eks update-kubeconfig --region eu-west-1 --name maintenance-manager-cluster
 
 
