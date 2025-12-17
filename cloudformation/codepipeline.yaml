@@ -21,7 +21,6 @@ Resources:
           - arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess
           - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
           - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
-          - arn:aws:iam::aws:policy/AmazonEKSClusterAdminPolicy
       Policies:
         - PolicyName: EKSDeploymentPolicy
           PolicyDocument:
