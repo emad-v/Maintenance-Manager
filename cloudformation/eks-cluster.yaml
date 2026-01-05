@@ -103,6 +103,8 @@ Resources:
           - !Ref PublicSubnet1B
         EndpointPrivateAccess: true  
         EndpointPublicAccess: true  
+      AccessConfig:
+        AuthenticationMode: API_AND_CONFIG_MAP
 
   EKSNodeGroupRole:
     Type: AWS::IAM::Role

@@ -30,7 +30,7 @@ Resources:
                 Effect: Allow
                 Action: eks:DescribeCluster
                 Resource: "arn:aws:eks:eu-west-1:855974671731:maintenance-manager-cluster"
-              - Sid: EksVpcClusterPolicy # what does sid mean? 
+              - Sid: EksVpcClusterPolicy
                 Effect: Allow
                 Action:
                   - ec2:DescribeDhcpOptions
@@ -39,11 +39,11 @@ Resources:
                   - ec2:DescribeSubnets
                   - ec2:DescribeSecurityGroups
                   - ec2:DescribeVpcs
-                Resource: "*" #what does it mean? 
+                Resource: "*" 
 
-              - Effect: Allow # here why there is no Sid like others?
+              - Effect: Allow 
                 Action: "ec2:CreateNetworkInterface"
-                Resource: "*" #what does it mean? 
+                Resource: "*" 
                 Condition: 
                   StringEqualsIfExists: 
                     ec2:Subnet:
@@ -163,6 +163,7 @@ Resources:
     Type: AWS::CodePipeline::Pipeline
     Properties:
       Name: maintenance-manager-pipeline
+      PipelineType: "V2"
       RoleArn: !GetAtt CodePipelineServiceRole.Arn
       ArtifactStore:
         Type: S3
@@ -210,6 +211,9 @@ Resources:
                 - Name: SourceOutput
               Configuration:
                 ClusterName: maintenance-manager-cluster
-                ManifestPath: kubernetes/ 
-                KubernetesNamespace: default
+                ManifestFiles: 
+                    - kubernetes/postgres-deployment.yaml
+                    - kubernetes/postgres-service.yaml
+                    - kubernetes/app-deployment.yaml
+                    - kubernetes/app-service.yaml                
 
