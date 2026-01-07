@@ -31,7 +31,7 @@ Resources:
       VpcId: !Ref myVPC
       CidrBlock: 10.0.1.0/24
       AvailabilityZone: "eu-west-1a"
-      MapPublicIpOnLaunch: true  #// not needed since we will be accessing the program from the cluster ip addreess - save cost
+      MapPublicIpOnLaunch: true  # Required for worker nodes to access ECR/AWS services (no NAT Gateway)
       Tags:
         - Key: Name
           Value: public-subnet-1a
@@ -91,6 +91,8 @@ Resources:
         - Key: Name
           Value: eks-cluster-role
 
+
+
   EKSCluster:
     Type: AWS::EKS::Cluster
     Properties:
@@ -144,3 +146,14 @@ Resources:
       Tags:
         Name: eks-node-group
         
+
+  PipelineAccessEntry:
+    Type: AWS::EKS::AccessEntry
+    Properties:
+      ClusterName: !Ref EKSCluster
+      PrincipalArn: arn:aws:iam::855974671731:role/maintenance-manager-pipelin-CodePipelineServiceRole-TbljmSJfeWoD
+      Type: STANDARD
+      AccessPolicies:
+        - PolicyArn: arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy
+          AccessScope:
+            Type: cluster
