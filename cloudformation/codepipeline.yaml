@@ -19,6 +19,55 @@ Resources:
           - arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess
           - arn:aws:iam::aws:policy/AmazonS3FullAccess
           - arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess
+          - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+          - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+      Policies:
+        - PolicyName: EKSDeploymentPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement: 
+              - Sid: EksClusterPolicy
+                Effect: Allow
+                Action: eks:DescribeCluster
+                Resource: "arn:aws:eks:eu-west-1:855974671731:maintenance-manager-cluster"
+              - Sid: EksVpcClusterPolicy
+                Effect: Allow
+                Action:
+                  - ec2:DescribeDhcpOptions
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:DescribeRouteTables
+                  - ec2:DescribeSubnets
+                  - ec2:DescribeSecurityGroups
+                  - ec2:DescribeVpcs
+                Resource: "*" 
+
+              - Effect: Allow 
+                Action: "ec2:CreateNetworkInterface"
+                Resource: "*" 
+                Condition: 
+                  StringEqualsIfExists: 
+                    ec2:Subnet:
+                      - "arn:aws:ec2:eu-west-1:855974671731:subnet/subnet-037177930bff81926"
+                      - "arn:aws:ec2:eu-west-1:855974671731:subnet/subnet-0195877cdc31c7868"
+                  
+              - Effect: Allow
+                Action: ec2:CreateNetworkInterfacePermission
+                Resource: "*"
+                Condition:
+                  ArnEquals:
+                    ec2:Subnet:
+                      - "arn:aws:ec2:eu-west-1:855974671731:subnet/subnet-037177930bff81926"
+                      - "arn:aws:ec2:eu-west-1:855974671731:subnet/subnet-0195877cdc31c7868"
+            
+              - Effect: Allow
+                Action: ec2:DeleteNetworkInterface
+                Resource: "*"
+                Condition:
+                  StringEqualsIfExists:
+                    ec2:Subnet:
+                      - "arn:aws:ec2:eu-west-1:855974671731:subnet/subnet-037177930bff81926"
+                      - "arn:aws:ec2:eu-west-1:855974671731:subnet/subnet-0195877cdc31c7868"      
+
       Tags:
         - Key: Name
           Value: codepipeline-service-role
@@ -46,25 +95,25 @@ Resources:
         - Key: Name
           Value: codebuild-service-role
 
-  CodePipelineDeployRole: 
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: codebuild.amazonaws.com
-            Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
-        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
-        - arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess
-        - arn:aws:iam::aws:policy/AmazonS3FullAccess
-        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
-      Tags:
-        - Key: Name
-          Value: codedeploy-service-role
+  # CodePipelineDeployRole: 
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service: codebuild.amazonaws.com
+  #           Action: sts:AssumeRole
+  #     ManagedPolicyArns:
+  #       - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+  #       - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+  #       - arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess
+  #       - arn:aws:iam::aws:policy/AmazonS3FullAccess
+  #       - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+  #     Tags:
+  #       - Key: Name
+  #         Value: codedeploy-service-role
 
 
   ArtifactStoreBucket:
@@ -95,25 +144,26 @@ Resources:
 
 
 
-  CodeBuildDeployProject:
-    Type: AWS::CodeBuild::Project
-    Properties: 
-      Name: maintenance-manager-deploy-build
-      ServiceRole: !GetAtt CodePipelineDeployRole.Arn
-      Artifacts:
-        Type: CODEPIPELINE
-      Environment: 
-        Type: LINUX_CONTAINER
-        ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/standard:7.0
-      Source: 
-        Type: CODEPIPELINE
-        BuildSpec: buildspec-deploy.yaml
+  # CodeBuildDeployProject:
+  #   Type: AWS::CodeBuild::Project
+  #   Properties: 
+  #     Name: maintenance-manager-deploy-builde
+  #     ServiceRole: !GetAtt CodePipelineDeployRole.Arn
+  #     Artifacts:
+  #       Type: CODEPIPELINE
+  #     Environment: 
+  #       Type: LINUX_CONTAINER
+  #       ComputeType: BUILD_GENERAL1_SMALL
+  #       Image: aws/codebuild/standard:7.0
+  #     Source: 
+  #       Type: CODEPIPELINE
+  #       BuildSpec: buildspec-deploy.yaml    
 
   MaintenancPipline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
       Name: maintenance-manager-pipeline
+      PipelineType: "V2"
       RoleArn: !GetAtt CodePipelineServiceRole.Arn
       ArtifactStore:
         Type: S3
@@ -130,8 +180,8 @@ Resources:
               Configuration:
                 Owner: emad-v 
                 Repo: Maintenance-Manager
-                Branch: main
-                OAuthToken: "{{resolve:secretsmanager:github-token-maintenance-manager:SecretString:token}}" # it might not work in a sandbox 
+                Branch: test-branch
+                OAuthToken: "{{resolve:secretsmanager:github-token-maintenance-manager:SecretString:token}}" 
               OutputArtifacts:
                 - Name: SourceOutput
         - Name: Build  #build stage 
@@ -153,12 +203,17 @@ Resources:
           Actions: 
             - Name: DeployAction 
               ActionTypeId:
-                Category: Build
+                Category: Deploy
                 Owner: AWS
-                Provider: CodeBuild
+                Provider: EKS
                 Version: "1"
               InputArtifacts:
                 - Name: SourceOutput
               Configuration:
-                ProjectName: !Ref CodeBuildDeployProject
+                ClusterName: maintenance-manager-cluster
+                ManifestFiles: 
+                    - kubernetes/postgres-deployment.yaml
+                    - kubernetes/postgres-service.yaml
+                    - kubernetes/app-deployment.yaml
+                    - kubernetes/app-service.yaml                
 

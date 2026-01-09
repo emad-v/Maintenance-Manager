@@ -430,3 +430,5 @@ src/**/appsettings.Development.json
 src/**/appsettings.Docker.json
 src/**/appsettings.Local.json
 
+
+/src/secrets.yaml
