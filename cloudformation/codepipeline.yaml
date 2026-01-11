@@ -180,7 +180,7 @@ Resources:
               Configuration:
                 Owner: emad-v 
                 Repo: Maintenance-Manager
-                Branch: test-branch
+                Branch: main
                 OAuthToken: "{{resolve:secretsmanager:github-token-maintenance-manager:SecretString:token}}" 
               OutputArtifacts:
                 - Name: SourceOutput

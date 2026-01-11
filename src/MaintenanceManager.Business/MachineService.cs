@@ -90,7 +90,7 @@ namespace MaintenanceManager.Business
                 Name = machine.Name,
                 Model = machine.Model,
                 Type = machine.Type,
-                CustomerReference = machine.Reference
+                CustomerReference = machine.CustomerReference
             };
 
 
@@ -107,7 +107,7 @@ namespace MaintenanceManager.Business
                 Name = machine.Name,
                 Model = machine.Model,
                 Type = machine.Type,
-                CustomerReference = machine.Reference
+                CustomerReference = machine.CustomerReference
 
             });
             return result;
