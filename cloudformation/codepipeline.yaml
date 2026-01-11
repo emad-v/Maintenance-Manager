@@ -211,9 +211,5 @@ Resources:
                 - Name: SourceOutput
               Configuration:
                 ClusterName: maintenance-manager-cluster
-                ManifestFiles: 
-                    - kubernetes/postgres-deployment.yaml
-                    - kubernetes/postgres-service.yaml
-                    - kubernetes/app-deployment.yaml
-                    - kubernetes/app-service.yaml                
+                ManifestFiles:  "kubernetes/postgres-deployment.yaml,kubernetes/postgres-service.yaml,kubernetes/app-deployment.yaml,kubernetes/app-service.yaml"                
 
