@@ -22,17 +22,17 @@ spec:
           value: "Docker"
         - name: ConnectionStrings__Default
           value: "Host=postgres-service;Port=5432;Database=MaintenanceManager;Username=postgres;Password=4444"
-        - name: AWS_ACCESS_KEY_ID
+        - name: AWS__AccessKey
           valueFrom:
             secretKeyRef:
               name: aws-credentials
               key: AWS_ACCESS_KEY_ID
-        - name: AWS_SECRET_ACCESS_KEY
+        - name: AWS__SecretKey
           valueFrom:
             secretKeyRef:
               name: aws-credentials
               key: AWS_SECRET_ACCESS_KEY
-        - name: AWS_SESSION_TOKEN
+        - name: AWS__SessionToken
           valueFrom:
             secretKeyRef:
               name: aws-credentials
