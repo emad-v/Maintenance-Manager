@@ -147,7 +147,7 @@ namespace MaintenanceManager.Business
             foreach (var status in statuses)
             {
                 var MaintenanceRule = await _maintenanceRuleRepository.GetMaintenanceRuleByReference(status.MaintenanceRuleReference);
-                if (!status.IsOverDue && usageCounter.Value >= status.LastMaintenanceCounterValue + MaintenanceRule.IntervalValue)
+                if (!status.IsOverDue && usageCounter.Value >= status.NextDueIn)
                 {
                     await _statusReposiotry.UpdateOverDue(status.Reference, usageCounter.Value);
                     await _notificationService.CreateOverDueNotifications(status.Reference);
