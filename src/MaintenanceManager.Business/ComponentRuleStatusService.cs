@@ -112,7 +112,7 @@ namespace MaintenanceManager.Business
 
         public async Task<ComponentRuleStatusResponse> GetStatusByReference(string componentReference, string statusReference)
         {
-
+            Console.WriteLine("Update pefromed from the get stauts by reference ");
             ComponentRuleStatus componentRuleStatus = await _statusReposiotry.GetComponentRuleStatusByReference(statusReference);
             MaintenanceRule maintenanceRule = await _maintenanceRuleRepository.GetMaintenanceRuleByReference(componentRuleStatus.MaintenanceRuleReference);
             UsageCounter? usageCounter = await _usageCounterRepository.GetCounterTypeForComponent(componentReference, maintenanceRule.CounterType);
@@ -130,7 +130,7 @@ namespace MaintenanceManager.Business
                 UsageCounterReference = componentRuleStatus.UsageCounterReference,
                 LastServiceAt = componentRuleStatus.LastServiceAt,
                 CurrentUsage = usageCounter.Value,
-                Remaining = componentRuleStatus.LastMaintenanceCounterValue + maintenanceRule.IntervalValue - usageCounter.Value,
+                Remaining = componentRuleStatus.NextDueIn - componentRuleStatus.LastMaintenanceCounterValue,
                 ThresholdPercentage = maintenanceRule.IntervalValue > 0 ? ((double)usageCounter.Value - componentRuleStatus.LastMaintenanceCounterValue / maintenanceRule.IntervalValue) * 100 : 0,
                 IsOverDue = componentRuleStatus.IsOverDue,
 
