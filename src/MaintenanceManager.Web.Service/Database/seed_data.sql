@@ -11,7 +11,8 @@ TRUNCATE TABLE
   "Machines",
   "UserCustomers",
   "Customers",
-  "Users"
+  "Users",
+   "ComponentRuleStatuses"
   RESTART IDENTITY CASCADE;
 
 -- =======================================
