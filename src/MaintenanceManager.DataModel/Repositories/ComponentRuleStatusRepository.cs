@@ -58,8 +58,11 @@ namespace MaintenanceManager.Data.Repositories
             componentRuleStatusDb.LastServiceAt = lastServiceAt;
             componentRuleStatusDb.NextDueIn = NextDueIn;
             componentRuleStatusDb.IsOverDue = false;
+            Console.WriteLine($"Set IsOverDue to: {componentRuleStatusDb.IsOverDue}");
+
             componentRuleStatusDb.LastMaintenanceCounterValue = currentCounterValue;
             await _context.SaveChangesAsync();
+            Console.WriteLine($"=== SAVED to database ===");
             return MapToComponentRuleStatus(componentRuleStatusDb);
 
         }
