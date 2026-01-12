@@ -146,7 +146,10 @@ namespace MaintenanceManager.Business
 
             foreach (var status in statuses)
             {
+                Console.WriteLine("New update from component rule status, in the process over due ");
+                Console.WriteLine($"the next due value is {status.NextDueIn} ");
                 var MaintenanceRule = await _maintenanceRuleRepository.GetMaintenanceRuleByReference(status.MaintenanceRuleReference);
+                Console.WriteLine($"the usage counter value is {usageCounter.Value}"); 
                 if (!status.IsOverDue && usageCounter.Value >= status.NextDueIn)
                 {
                     await _statusReposiotry.UpdateOverDue(status.Reference, usageCounter.Value);
