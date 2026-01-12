@@ -17,24 +17,24 @@ namespace MaintenanceManager.Business
 {
     public class ComponentRuleStatusService
     {
-       
+
         private readonly IComponentRuleStatusRepository _statusReposiotry;
         private readonly IComponentRepository _componentRepository;
         private readonly IMaintenanceRuleRepository _maintenanceRuleRepository;
         private readonly IUsageCounterRepository _usageCounterRepository;
         private readonly NotificationService _notificationService;
 
-        public ComponentRuleStatusService(IComponentRuleStatusRepository statusReposiotry, IComponentRepository componentRepository, IMaintenanceRuleRepository maintenanceRuleRepository, IUsageCounterRepository usageCounter,NotificationService notificationService)
+        public ComponentRuleStatusService(IComponentRuleStatusRepository statusReposiotry, IComponentRepository componentRepository, IMaintenanceRuleRepository maintenanceRuleRepository, IUsageCounterRepository usageCounter, NotificationService notificationService)
         {
             _statusReposiotry = statusReposiotry;
-            _componentRepository = componentRepository; 
+            _componentRepository = componentRepository;
             _maintenanceRuleRepository = maintenanceRuleRepository;
             _usageCounterRepository = usageCounter;
             _notificationService = notificationService;
         }
 
 
-        public async Task<ComponentRuleStatusResponse> AssignRule(string componentRef,string maintenanceRuleReference)
+        public async Task<ComponentRuleStatusResponse> AssignRule(string componentRef, string maintenanceRuleReference)
         {
             Component component = await _componentRepository.GetComponentByReference(componentRef);
             MaintenanceRule maintenanceRule = await _maintenanceRuleRepository.GetMaintenanceRuleByReference(maintenanceRuleReference);
@@ -56,7 +56,7 @@ namespace MaintenanceManager.Business
                     Value = 0,
                     UpdatedAt = DateTime.UtcNow
                 };
-                 await _usageCounterRepository.AddCounter(usageCounter);
+                await _usageCounterRepository.AddCounter(usageCounter);
             }
             if (await _statusReposiotry.ExistsAsync(component.Reference, maintenanceRule.Reference))
             {
@@ -70,10 +70,10 @@ namespace MaintenanceManager.Business
                 UsageCounterReference = usageCounter.Reference,
                 LastServiceAt = DateTime.UtcNow,
                 NextDueIn = maintenanceRule.IntervalValue,
-                IsOverDue = usageCounter.Value >= maintenanceRule.IntervalValue
+                IsOverDue = false
             };
 
-             await _statusReposiotry.AddStatus(componentRuleStatus);
+            await _statusReposiotry.AddStatus(componentRuleStatus);
 
             return new ComponentRuleStatusResponse()
             {
@@ -83,8 +83,9 @@ namespace MaintenanceManager.Business
                 UsageCounterReference = componentRuleStatus.UsageCounterReference,
                 LastServiceAt = componentRuleStatus.LastServiceAt,
                 CurrentUsage = usageCounter.Value,
-                Remaining = maintenanceRule.IntervalValue - usageCounter.Value,
-                ThresholdPercentage = maintenanceRule.IntervalValue > 0 ? ((double)usageCounter.Value / maintenanceRule.IntervalValue) * 100 : 0,
+                Remaining = componentRuleStatus.LastMaintenanceCounterValue + maintenanceRule.IntervalValue - usageCounter.Value,
+                ThresholdPercentage = maintenanceRule.IntervalValue > 0
+                ? ((double)(usageCounter.Value - componentRuleStatus.LastMaintenanceCounterValue) / maintenanceRule.IntervalValue) * 100: 0,
                 IsOverDue = componentRuleStatus.IsOverDue,
                 CreatedDate = componentRuleStatus.CreatedDate,
 
@@ -115,11 +116,13 @@ namespace MaintenanceManager.Business
             ComponentRuleStatus componentRuleStatus = await _statusReposiotry.GetComponentRuleStatusByReference(statusReference);
             MaintenanceRule maintenanceRule = await _maintenanceRuleRepository.GetMaintenanceRuleByReference(componentRuleStatus.MaintenanceRuleReference);
             UsageCounter? usageCounter = await _usageCounterRepository.GetCounterTypeForComponent(componentReference, maintenanceRule.CounterType);
+            Console.WriteLine($"Calculating Remaining: {componentRuleStatus.LastMaintenanceCounterValue} + {maintenanceRule.IntervalValue} - {usageCounter.Value}");
             if (usageCounter == null)
             {
                 throw new InvalidOperationException("The Usage counter cant be null");
             }
             return new ComponentRuleStatusResponse()
+
             {
                 Reference = componentRuleStatus.Reference,
                 ComponentReference = componentReference,
@@ -127,10 +130,10 @@ namespace MaintenanceManager.Business
                 UsageCounterReference = componentRuleStatus.UsageCounterReference,
                 LastServiceAt = componentRuleStatus.LastServiceAt,
                 CurrentUsage = usageCounter.Value,
-                Remaining =  componentRuleStatus.LastMaintenanceCounterValue + maintenanceRule.IntervalValue - usageCounter.Value,
-                ThresholdPercentage = maintenanceRule.IntervalValue > 0 ? ((double)usageCounter.Value / maintenanceRule.IntervalValue) * 100 : 0,
+                Remaining = componentRuleStatus.LastMaintenanceCounterValue + maintenanceRule.IntervalValue - usageCounter.Value,
+                ThresholdPercentage = maintenanceRule.IntervalValue > 0 ? ((double)usageCounter.Value - componentRuleStatus.LastMaintenanceCounterValue / maintenanceRule.IntervalValue) * 100 : 0,
                 IsOverDue = componentRuleStatus.IsOverDue,
-              
+
 
 
             };
@@ -146,10 +149,10 @@ namespace MaintenanceManager.Business
                 var MaintenanceRule = await _maintenanceRuleRepository.GetMaintenanceRuleByReference(status.MaintenanceRuleReference);
                 if (!status.IsOverDue && usageCounter.Value >= status.LastMaintenanceCounterValue + MaintenanceRule.IntervalValue)
                 {
-                    await _statusReposiotry.UpdateOverDue(status.Reference,usageCounter.Value);
+                    await _statusReposiotry.UpdateOverDue(status.Reference, usageCounter.Value);
                     await _notificationService.CreateOverDueNotifications(status.Reference);
                 }
-               
+
             }
 
         }
