@@ -84,8 +84,7 @@ namespace MaintenanceManager.Business
                 LastServiceAt = componentRuleStatus.LastServiceAt,
                 CurrentUsage = usageCounter.Value,
                 Remaining = componentRuleStatus.NextDueIn - usageCounter.Value,
-                ThresholdPercentage = maintenanceRule.IntervalValue > 0
-                ? ((double)(componentRuleStatus.NextDueIn - usageCounter.Value) / maintenanceRule.IntervalValue) * 100: 0,
+                ThresholdPercentage = (usageCounter.Value - componentRuleStatus.LastMaintenanceCounterValue) /maintenanceRule.IntervalValue * 100,
                 IsOverDue = componentRuleStatus.IsOverDue,
                 CreatedDate = componentRuleStatus.CreatedDate,
 
@@ -130,8 +129,8 @@ namespace MaintenanceManager.Business
                 UsageCounterReference = componentRuleStatus.UsageCounterReference,
                 LastServiceAt = componentRuleStatus.LastServiceAt,
                 CurrentUsage = usageCounter.Value,
-                Remaining = componentRuleStatus.NextDueIn-componentRuleStatus.LastMaintenanceCounterValue,
-                ThresholdPercentage = maintenanceRule.IntervalValue > 0 ? ((double)componentRuleStatus.NextDueIn - componentRuleStatus.LastMaintenanceCounterValue / maintenanceRule.IntervalValue) * 100 : 0,
+                Remaining = componentRuleStatus.NextDueIn - usageCounter.Value,
+                ThresholdPercentage = (usageCounter.Value - componentRuleStatus.LastMaintenanceCounterValue) / maintenanceRule.IntervalValue * 100,
                 IsOverDue = componentRuleStatus.IsOverDue,
 
 
