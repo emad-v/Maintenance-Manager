@@ -21,7 +21,8 @@ namespace MaintenanceManager.Web.Service
         {
             var builder = WebApplication.CreateBuilder(args);//// This line automatically loads appsettings.{Environment}.json
             Console.WriteLine($"Environment: ----------------------------------->>   {builder.Environment.EnvironmentName}");
-            Console.WriteLine(  "test test test");
+            Console.WriteLine(  "--------------------------------------------------------------------");
+            Console.WriteLine(  "applied the fix to the remaingin and threshold, did it work? ");
            
 
             builder.Services.AddDbContext<MaintenanceManagerDbContext>(options =>
