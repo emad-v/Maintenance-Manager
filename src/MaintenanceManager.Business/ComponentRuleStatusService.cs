@@ -116,7 +116,7 @@ namespace MaintenanceManager.Business
             ComponentRuleStatus componentRuleStatus = await _statusReposiotry.GetComponentRuleStatusByReference(statusReference);
             MaintenanceRule maintenanceRule = await _maintenanceRuleRepository.GetMaintenanceRuleByReference(componentRuleStatus.MaintenanceRuleReference);
             UsageCounter? usageCounter = await _usageCounterRepository.GetCounterTypeForComponent(componentReference, maintenanceRule.CounterType);
-            Console.WriteLine($"Calculating Remaining: {componentRuleStatus.LastMaintenanceCounterValue} + {maintenanceRule.IntervalValue} - {usageCounter.Value}");
+            Console.WriteLine($"Calculating Remaining: {componentRuleStatus.NextDueIn} - {componentRuleStatus.LastMaintenanceCounterValue}");
             if (usageCounter == null)
             {
                 throw new InvalidOperationException("The Usage counter cant be null");
@@ -130,8 +130,8 @@ namespace MaintenanceManager.Business
                 UsageCounterReference = componentRuleStatus.UsageCounterReference,
                 LastServiceAt = componentRuleStatus.LastServiceAt,
                 CurrentUsage = usageCounter.Value,
-                Remaining = componentRuleStatus.NextDueIn - componentRuleStatus.LastMaintenanceCounterValue,
-                ThresholdPercentage = maintenanceRule.IntervalValue > 0 ? ((double)usageCounter.Value - componentRuleStatus.LastMaintenanceCounterValue / maintenanceRule.IntervalValue) * 100 : 0,
+                Remaining = componentRuleStatus.NextDueIn-componentRuleStatus.LastMaintenanceCounterValue,
+                ThresholdPercentage = maintenanceRule.IntervalValue > 0 ? ((double)componentRuleStatus.NextDueIn - componentRuleStatus.LastMaintenanceCounterValue / maintenanceRule.IntervalValue) * 100 : 0,
                 IsOverDue = componentRuleStatus.IsOverDue,
 
 
