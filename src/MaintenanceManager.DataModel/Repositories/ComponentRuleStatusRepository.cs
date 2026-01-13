@@ -132,6 +132,7 @@ namespace MaintenanceManager.Data.Repositories
                 LastServiceAt = componentRuleStatus.LastServiceAt,
                 NextDueIn = componentRuleStatus.NextDueIn,
                 IsOverDue = componentRuleStatus.IsOverDue,
+                LastMaintenanceCounterValue = componentRuleStatus.LastMaintenanceCounterValue,
                 CreatedDate = componentRuleStatus.CreatedDate,
             };
         }
@@ -146,6 +147,7 @@ namespace MaintenanceManager.Data.Repositories
                 LastServiceAt = componentRuleStatusDb.LastServiceAt,
                 NextDueIn = componentRuleStatusDb.NextDueIn,
                 IsOverDue = componentRuleStatusDb.IsOverDue,
+                LastMaintenanceCounterValue = componentRuleStatusDb.LastMaintenanceCounterValue,
                 CreatedDate = componentRuleStatusDb.CreatedDate,
             };
         }
